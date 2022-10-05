@@ -12,9 +12,42 @@ public class LapComplete : MonoBehaviour
 
     public GameObject HalfLapTrigger;
 
-    private void OnTriggerEnter()
+    private void OnTriggerEnter(Collider other)
     {
-        if(LapTimeManager.SecondCount <= 9)
+        if (other.transform.CompareTag("Player"))
+        {
+            if (LapTimeManager.BestTimer == 0)
+            {
+                PlayerPrefs.SetFloat("BestTime", LapTimeManager.LapTimer);
+                LapTimeManager.BestTimer = LapTimeManager.LapTimer;
+                SetBestText();
+            }
+            else
+            {
+                float currentLapTimer = LapTimeManager.LapTimer;
+                float bestLapTimer = PlayerPrefs.GetFloat("BestTime");
+                if (bestLapTimer > currentLapTimer)
+                {
+                    PlayerPrefs.SetFloat("BestTime", currentLapTimer);
+                    SetBestText();
+                }
+            }
+
+
+
+            LapTimeManager.MiliCount = 0;
+            LapTimeManager.SecondCount = 0;
+            LapTimeManager.MinuteCount = 0;
+            LapTimeManager.LapTimer = 0;
+
+            HalfLapTrigger.SetActive(true);
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void SetBestText()
+    {
+        if (LapTimeManager.SecondCount <= 9)
         {
             BestSecondText.text = "0" + LapTimeManager.SecondCount + ".";
         }
@@ -33,12 +66,5 @@ public class LapComplete : MonoBehaviour
         }
 
         BestMiliText.text = "" + LapTimeManager.MiliCount.ToString("F0");
-
-        LapTimeManager.MiliCount = 0;
-        LapTimeManager.SecondCount = 0;
-        LapTimeManager.MinuteCount = 0;
-
-        HalfLapTrigger.SetActive(true);
-        gameObject.SetActive(false);
     }
 }

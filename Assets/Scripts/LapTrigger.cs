@@ -6,9 +6,12 @@ public class LapTrigger : MonoBehaviour
 {
     public GameObject fullLap;
 
-    private void OnTriggerEnter()
+    private void OnTriggerEnter(Collider other)
     {
-        gameObject.SetActive(false);
-        fullLap.SetActive(true);
+        if(other.transform.CompareTag("Player"))
+        {
+            gameObject.SetActive(false);
+            fullLap.SetActive(true);
+        }
     }
 }
